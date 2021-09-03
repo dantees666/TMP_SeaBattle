@@ -12,19 +12,27 @@ namespace TMP_SeaBattle
 {
     public partial class MenuForm : Form
     {
+        const string defaultIp = "127.0.0.1";
+        const int defaultPort = 8888;
+
         Client client;
         public MenuForm()
         {
             InitializeComponent();
-            client = new Client();
+
+            ipInput.Text = defaultIp;
+            portInput.Text = defaultPort.ToString();
         }
 
         private void startButton_Click(object sender, EventArgs e)
         {
             try
             {
-                string message = "татуировку де бил?";
-                MessageBox.Show(client.Interact(message));
+                client = new Client(ipInput.Text,int.Parse(portInput.Text));
+                client.Interact("CreateConnection");
+                Hide();
+                GameForm gameForm = new GameForm();
+                gameForm.ShowDialog();
             }
             catch (Exception ex)
             {
