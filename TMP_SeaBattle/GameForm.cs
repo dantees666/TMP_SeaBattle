@@ -14,9 +14,6 @@ namespace TMP_SeaBattle
 {
     public partial class GameForm : Form
     {
-        private string ip;
-        private int port;
-
         public const int mapSize = 10;
         public int cellSize = 30;
         public string alphabet = "АБВГДЕЖЗИК";
@@ -28,8 +25,6 @@ namespace TMP_SeaBattle
         public Button[,] enemyButtons = new Button[mapSize, mapSize];
 
         public bool isPlaying = false;
-
-        public Bot bot;
 
         public GameForm()
         {
@@ -122,7 +117,6 @@ namespace TMP_SeaBattle
         public void Start(object sender, EventArgs e)
         {
             isPlaying = true;
-
         }
 
         public bool CheckIfMapIsNotEmpty()
@@ -164,7 +158,6 @@ namespace TMP_SeaBattle
 
         public void PlayerShoot(object sender, EventArgs e)
         {
-
             Button pressedButton = sender as Button;
             bool playerTurn = Shoot(enemyMap, pressedButton);
             if (!playerTurn)
