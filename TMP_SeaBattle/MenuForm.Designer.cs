@@ -96,6 +96,7 @@ namespace TMP_SeaBattle
             this.startButton.TabIndex = 5;
             this.startButton.Text = "Начать!";
             this.startButton.UseVisualStyleBackColor = false;
+            this.startButton.Click += new System.EventHandler(this.startButton_Click);
             // 
             // MenuForm
             // 

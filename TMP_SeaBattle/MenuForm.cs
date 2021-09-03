@@ -19,7 +19,7 @@ namespace TMP_SeaBattle
             client = new Client();
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void startButton_Click(object sender, EventArgs e)
         {
             try
             {
