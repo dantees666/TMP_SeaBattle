@@ -38,6 +38,7 @@
             this.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.Name = "GameForm";
             this.Text = "SeaBattle";
+            this.Load += new System.EventHandler(this.GameForm_Load);
             this.ResumeLayout(false);
 
         }

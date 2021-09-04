@@ -8,6 +8,9 @@ namespace GameServer
         public bool[,] myMap = new bool[mapSize, mapSize]; // bots
         public bool[,] targetMap = new bool[mapSize, mapSize]; //players
 
+        private static Server server;
+
+
         public bool IsInsideMap(int i, int j)
         {
             if (i < 0 || j < 0 || i >= mapSize || j >= mapSize)
@@ -55,7 +58,7 @@ namespace GameServer
             return myMap;
         }
 
-        public bool Shoot()
+        public string Shoot()
         {
             Random r = new Random();
 
@@ -69,18 +72,21 @@ namespace GameServer
             while (targetMap[posX, posY]);
             targetMap[posX, posY] = true;
 
-            // отправить координаты на сервер
-            if (/*ответ сервера*/)
-                return false;
+            // отправить координаты клиенту
+            server.Send(posX + " " + posY);
+            string answer = server.Recieve();
+
+            if (answer == "true") //если попали - стреляем еще
+                return "false";
             else
-                return true;
+                return "true"; //иначе стреляет игрок
         }
 
         static void Main(string[] args)
         {
             try
             {
-                Server server = new Server();
+                server = new Server();
                 while (true)
                 {
                     string answer = server.Recieve();

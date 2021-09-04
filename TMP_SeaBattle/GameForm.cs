@@ -159,10 +159,10 @@ namespace TMP_SeaBattle
         public void PlayerShoot(object sender, EventArgs e)
         {
             Button pressedButton = sender as Button;
-            bool playerTurn = Shoot(enemyMap, pressedButton);
-            if (!playerTurn)
+            if(Shoot(enemyMap, pressedButton) == "true")
                 bot.Shoot();
-
+            else 
+                //poluchit' v ebalo
             if (!CheckIfMapIsNotEmpty())
             {
                 this.Controls.Clear();
@@ -170,7 +170,7 @@ namespace TMP_SeaBattle
             }
         }
 
-        public bool Shoot(int[,] map, Button pressedButton)
+        public string Shoot(int[,] map, Button pressedButton)
         {
             bool hit = false;
             if (isPlaying)
@@ -192,7 +192,15 @@ namespace TMP_SeaBattle
                     pressedButton.BackColor = Color.Black;
                 }
             }
-            return hit;
+            if (hit)
+                return "true";
+            else
+                return "false";
+        }
+
+        private void GameForm_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }
