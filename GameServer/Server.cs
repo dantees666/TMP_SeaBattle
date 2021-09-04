@@ -85,11 +85,9 @@ namespace GameServer
             while (handler.Available > 0);
 
             if(builder.ToString() == "CreateConnection")
-            {
-                Console.WriteLine(DateTime.Now.ToShortTimeString() + " - установлено соединение с клиентом");
-            }
+                Console.WriteLine(DateTime.Now.ToShortTimeString() + " [+] установлено соединение с клиентом");
             else
-                Console.WriteLine(DateTime.Now.ToShortTimeString() + " - ответ клиента получен");
+                Console.WriteLine(DateTime.Now.ToShortTimeString() + " [+] ответ клиента получен");
 
             return builder.ToString();
         }
