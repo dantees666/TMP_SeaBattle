@@ -8,7 +8,7 @@ using System.Net.Sockets;
 
 namespace TMP_SeaBattle
 {
-    class Client
+    public class Client
     {
         private string ip;
         private int port;

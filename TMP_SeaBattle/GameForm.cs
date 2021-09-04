@@ -14,20 +14,22 @@ namespace TMP_SeaBattle
 {
     public partial class GameForm : Form
     {
-        public const int mapSize = 10;
-        public int cellSize = 30;
-        public string alphabet = "АБВГДЕЖЗИК";
-
-        public int[,] myMap = new int[mapSize, mapSize];
-        public int[,] enemyMap = new int[mapSize, mapSize];
+        private const int mapSize = 11;
+        private int cellSize = 30;
+        private string alphabet = "АБВГДЕЖЗИК";
 
         public Button[,] myButtons = new Button[mapSize, mapSize];
         public Button[,] enemyButtons = new Button[mapSize, mapSize];
 
-        public bool isPlaying = false;
+        private int myBoatsCount = 0, enemyBoatsCount = 20;
 
-        public GameForm()
+        private bool isPlaying = false;
+
+        Client client;
+
+        public GameForm(Client client = null)
         {
+            this.client = client;
             InitializeComponent();
             Init();
         }
@@ -36,8 +38,6 @@ namespace TMP_SeaBattle
         {
             isPlaying = false;
             CreateMaps();
-            bot = new Bot(enemyMap, myMap, enemyButtons, myButtons);
-            enemyMap = bot.ConfigureShips();
         }
 
         public void CreateMaps()
@@ -48,10 +48,8 @@ namespace TMP_SeaBattle
             {
                 for (int j = 0; j < mapSize; j++)
                 {
-                    myMap[i, j] = 0;
-
                     Button button = new Button();
-                    button.Location = new Point(j * cellSize, i * cellSize);
+                    button.Location = new Point(i * cellSize, j * cellSize);
                     button.Size = new Size(cellSize, cellSize);
                     button.BackColor = Color.White;
                     if (j == 0 || i == 0)
@@ -74,11 +72,8 @@ namespace TMP_SeaBattle
             {
                 for (int j = 0; j < mapSize; j++)
                 {
-                    myMap[i, j] = 0;
-                    enemyMap[i, j] = 0;
-
                     Button button = new Button();
-                    button.Location = new Point(320 + j * cellSize, i * cellSize);
+                    button.Location = new Point(350 + i * cellSize, j * cellSize);
                     button.Size = new Size(cellSize, cellSize);
                     button.BackColor = Color.White;
                     if (j == 0 || i == 0)
@@ -119,88 +114,87 @@ namespace TMP_SeaBattle
             isPlaying = true;
         }
 
-        public bool CheckIfMapIsNotEmpty()
+        public void CheckIfGameEnded()
         {
-            bool isEmpty1 = true;
-            bool isEmpty2 = true;
-            for (int i = 1; i < mapSize; i++)
+            if (myBoatsCount <= 0)
             {
-                for (int j = 1; j < mapSize; j++)
-                {
-                    if (myMap[i, j] != 0)
-                        isEmpty1 = false;
-                    if (enemyMap[i, j] != 0)
-                        isEmpty2 = false;
-                }
+                DialogResult result = MessageBox.Show("Вы проиграли!", "Результат", MessageBoxButtons.OK);
+                if (result == DialogResult.OK)
+                    Application.Exit();
             }
-            if (isEmpty1 || isEmpty2)
-                return false;
-            else return true;
+            if (enemyBoatsCount <= 0)
+            {
+                DialogResult result = MessageBox.Show("Вы выиграли!", "Результат", MessageBoxButtons.OK);
+                if (result == DialogResult.OK)
+                    Application.Exit();
+            }
         }
 
         public void ConfigureShips(object sender, EventArgs e)
         {
             Button pressedButton = sender as Button;
-            if (!isPlaying)
+            if (!isPlaying && myBoatsCount < 20)
             {
-                if (myMap[pressedButton.Location.Y / cellSize, pressedButton.Location.X / cellSize] == 0)
+                if (pressedButton.BackColor == Color.White)
                 {
                     pressedButton.BackColor = Color.Red;
-                    myMap[pressedButton.Location.Y / cellSize, pressedButton.Location.X / cellSize] = 1;
+                    myBoatsCount++;
                 }
                 else
                 {
                     pressedButton.BackColor = Color.White;
-                    myMap[pressedButton.Location.Y / cellSize, pressedButton.Location.X / cellSize] = 0;
+                    myBoatsCount--;
                 }
+            }
+        }
+
+        public bool IsHit(string coord)
+        {
+            int x = coord.Split('-').Select(int.Parse).ToList().ElementAt(0);
+            int y = coord.Split('-').Select(int.Parse).ToList().ElementAt(1);
+            if (myButtons[y, x].BackColor == Color.Red)
+            {
+                myButtons[y, x].BackColor = Color.Blue;
+                myButtons[y, x].Text = "X";
+                myBoatsCount--;
+                CheckIfGameEnded();
+                return true;
+            }
+            else
+            {
+                myButtons[y, x].BackColor = Color.Black;
+                return false;
             }
         }
 
         public void PlayerShoot(object sender, EventArgs e)
         {
             Button pressedButton = sender as Button;
-            if(Shoot(enemyMap, pressedButton) == "true")
-                bot.Shoot();
-            else 
-                //poluchit' v ebalo
-            if (!CheckIfMapIsNotEmpty())
-            {
-                this.Controls.Clear();
-                Init();
-            }
-        }
-
-        public string Shoot(int[,] map, Button pressedButton)
-        {
-            bool hit = false;
             if (isPlaying)
-            {
-                int delta = 0;
-                if (pressedButton.Location.X > 320)
-                    delta = 320;
-                if (map[pressedButton.Location.Y / cellSize, (pressedButton.Location.X - delta) / cellSize] != 0)
-                {
-                    hit = true;
-                    map[pressedButton.Location.Y / cellSize, (pressedButton.Location.X - delta) / cellSize] = 0;
-                    pressedButton.BackColor = Color.Blue;
-                    pressedButton.Text = "X";
-                }
-                else
-                {
-                    hit = false;
-
-                    pressedButton.BackColor = Color.Black;
-                }
-            }
-            if (hit)
-                return "true";
-            else
-                return "false";
+                if (!Shoot(pressedButton))
+                    while (IsHit(client.Interact("Shoot")));
         }
 
-        private void GameForm_Load(object sender, EventArgs e)
+        public bool Shoot(Button pressedButton)
         {
-
+            int delta = 350;
+            int posX = (pressedButton.Location.X - delta) / cellSize;
+            int posY = pressedButton.Location.Y / cellSize;
+            if (client.Interact(posX + "-" + posY) == "true")
+            {
+                pressedButton.BackColor = Color.Blue;
+                pressedButton.Text = "X";
+                pressedButton.Enabled = false;
+                enemyBoatsCount--;
+                CheckIfGameEnded();
+                return true;
+            }
+            else
+            {
+                pressedButton.BackColor = Color.Black;
+                pressedButton.Enabled = false;
+                return false;
+            }
         }
     }
 }

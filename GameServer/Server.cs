@@ -8,7 +8,7 @@ using System.Net.Sockets;
 
 namespace GameServer
 {
-    class Server
+    public class Server
     {
         private string ip;
         private int port;

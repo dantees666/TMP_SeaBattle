@@ -14,8 +14,8 @@ namespace TMP_SeaBattle
     {
         const string defaultIp = "127.0.0.1";
         const int defaultPort = 8888;
-
         Client client;
+
         public MenuForm()
         {
             InitializeComponent();
@@ -31,7 +31,7 @@ namespace TMP_SeaBattle
                 client = new Client(ipInput.Text,int.Parse(portInput.Text));
                 client.Interact("CreateConnection");
                 Hide();
-                GameForm gameForm = new GameForm();
+                GameForm gameForm = new GameForm(client);
                 gameForm.ShowDialog();
             }
             catch (Exception ex)
