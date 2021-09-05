@@ -12,7 +12,7 @@ using System.Net.Sockets;
 
 namespace TMP_SeaBattle
 {
-    public partial class GameForm : Form
+    public partial class GameForm : Form //основная форма игры
     {
         private const int mapSize = 11;
         private int cellSize = 30;
@@ -27,7 +27,7 @@ namespace TMP_SeaBattle
 
         Client client;
 
-        public GameForm(Client client = null)
+        public GameForm(Client client = null) //конструктор
         {
             this.client = client;
             InitializeComponent();
@@ -40,11 +40,11 @@ namespace TMP_SeaBattle
             CreateMaps();
         }
 
-        public void CreateMaps()
+        public void CreateMaps() //создание карты
         {
             this.Width = mapSize * 2 * cellSize + 50;
             this.Height = (mapSize + 3) * cellSize + 20;
-            for (int i = 0; i < mapSize; i++)
+            for (int i = 0; i < mapSize; i++) //создание кораблей игрока и добавление соответствующих кнопок 
             {
                 for (int j = 0; j < mapSize; j++)
                 {
@@ -68,7 +68,7 @@ namespace TMP_SeaBattle
                     this.Controls.Add(button);
                 }
             }
-            for (int i = 0; i < mapSize; i++)
+            for (int i = 0; i < mapSize; i++) //создание кнопок для клеток бота
             {
                 for (int j = 0; j < mapSize; j++)
                 {
@@ -109,12 +109,12 @@ namespace TMP_SeaBattle
             this.Controls.Add(startButton);
         }
 
-        public void Start(object sender, EventArgs e)
+        public void Start(object sender, EventArgs e) //событие для кнопки начать игру
         {
             isPlaying = true;
         }
 
-        public void CheckIfGameEnded()
+        public void CheckIfGameEnded() //проверяет закончена ли игра и выводит результат
         {
             if (myBoatsCount <= 0)
             {
@@ -130,7 +130,7 @@ namespace TMP_SeaBattle
             }
         }
 
-        public void ConfigureShips(object sender, EventArgs e)
+        public void ConfigureShips(object sender, EventArgs e) //событие при нажатие на кнопку для создания своего корабля
         {
             Button pressedButton = sender as Button;
             if (!isPlaying && myBoatsCount < 20)
@@ -148,7 +148,7 @@ namespace TMP_SeaBattle
             }
         }
 
-        public bool IsHit(string coord)
+        public bool IsHit(string coord) //функция проверят попал ли бот
         {
             int x = coord.Split('-').Select(int.Parse).ToList().ElementAt(0);
             int y = coord.Split('-').Select(int.Parse).ToList().ElementAt(1);
@@ -167,7 +167,7 @@ namespace TMP_SeaBattle
             }
         }
 
-        public void PlayerShoot(object sender, EventArgs e)
+        public void PlayerShoot(object sender, EventArgs e) //функция для вызова выстрела игрока
         {
             Button pressedButton = sender as Button;
             if (isPlaying)
@@ -175,7 +175,7 @@ namespace TMP_SeaBattle
                     while (IsHit(client.Interact("Shoot")));
         }
 
-        public bool Shoot(Button pressedButton)
+        public bool Shoot(Button pressedButton) //функция выстрела игрока
         {
             int delta = 350;
             int posX = (pressedButton.Location.X - delta) / cellSize;

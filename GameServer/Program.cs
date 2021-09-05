@@ -13,12 +13,14 @@ namespace GameServer
                 Game game = new Game();
                 while (true)
                 {
-                    string answer = server.Recieve(), message = "0";
-                    if (answer == "Shoot")
+                    string answer = server.Recieve(), //получаем сообщение от клиента
+                    message = "0";
+
+                    if (answer == "Shoot")//команда на выстрел бота
                         message = game.Shoot();
-                    else if (answer.Contains('-'))
+                    else if (answer.Contains('-'))//команда на проверку попал ли игрок
                         message = game.IsHit(answer);
-                    else if (answer == "End")
+                    else if (answer == "End")//команда на перезапуск игры
                         game.Restart();
                     server.Send(message);
                 }

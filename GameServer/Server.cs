@@ -8,7 +8,7 @@ using System.Net.Sockets;
 
 namespace GameServer
 {
-    public class Server
+    public class Server //класс описывающий работу сервера
     {
         private string ip;
         private int port;
@@ -62,7 +62,7 @@ namespace GameServer
             Console.WriteLine("Сервер запущен. Ожидание подключений...");
         }
 
-        public void Send(string message)
+        public void Send(string message)//отправка сообщения
         {
             byte[] data = Encoding.Unicode.GetBytes(message); // Формируем сообщение в нужной кодировке
             handler.Send(data);
@@ -70,7 +70,7 @@ namespace GameServer
             DisposeHandler();
         }
 
-        public string Recieve()
+        public string Recieve()//функция для принятия сообщений
         {
             handler = listenSocket.Accept(); // Получаем сообщение
             StringBuilder builder = new StringBuilder();
@@ -96,6 +96,7 @@ namespace GameServer
         {
             if (handler != null)
             {
+                // Закрываем сокет
                 handler.Shutdown(SocketShutdown.Both);
                 handler.Close();
                 handler = null;

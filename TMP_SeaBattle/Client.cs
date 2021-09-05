@@ -8,7 +8,7 @@ using System.Net.Sockets;
 
 namespace TMP_SeaBattle
 {
-    public class Client
+    public class Client //класс описывающий взаимодействие клиента с сервером
     {
         private string ip;
         private int port;
@@ -41,13 +41,13 @@ namespace TMP_SeaBattle
             }
         }
 
-        public Client(string ip = "127.0.0.1", int port = 8888)
+        public Client(string ip = "127.0.0.1", int port = 8888) //конструктор
         {
             Ip = ip;
             Port = port;
         }
 
-        public void Init()
+        public void Init() // создать сокет и подключится к серверу
         {
             IPEndPoint ipPoint = new IPEndPoint(IPAddress.Parse(ip), port);
 
@@ -55,7 +55,7 @@ namespace TMP_SeaBattle
             socket.Connect(ipPoint); // Подключаемся к удаленному хосту
         }
 
-        public string Interact(string message)
+        public string Interact(string message) //отправить запрос и получить ответ
         {
             Init();
             byte[] data = Encoding.Unicode.GetBytes(message); // Формируем сообщение в нужной кодировке
@@ -76,7 +76,7 @@ namespace TMP_SeaBattle
             return builder.ToString();
         }
 
-        public void Dispose()
+        public void Dispose() //закрыть сокеты
         {
             // Закрываем сокет
             if (socket != null)

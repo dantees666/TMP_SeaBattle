@@ -6,24 +6,24 @@ using System.Threading.Tasks;
 
 namespace GameServer
 {
-    class Game
+    class Game //класс описывает поведение бота
     {
         public const int mapSize = 11;
-        public bool[,] myMap = new bool[mapSize, mapSize]; // bots
-        public bool[,] targetMap = new bool[mapSize, mapSize]; //players
+        public bool[,] myMap = new bool[mapSize, mapSize]; //карта бота
+        public bool[,] targetMap = new bool[mapSize, mapSize]; //карта игрока
 
-        public Game()
+        public Game() //конструктор класса
         {
             Restart();
         }
 
-        public void Restart()
+        public void Restart() //функция очищает карту и расставляет корабли бота на карте
         {
             Init();
             ConfigureShips();
         }
 
-        private void Init()
+        private void Init() //функция  очищает матрицы карты бота и игрока
         {
             for (int i = 0; i < mapSize; i++)
                 for (int j = 0; j < mapSize; j++)
@@ -33,14 +33,15 @@ namespace GameServer
                 }
         }
 
-        private bool IsInsideMap(int i, int j)
+        private bool IsInsideMap(int i, int j) //функция проверяет существует ли ячейка с выбранными координатами внутри нашей матрицы
         {
             if (i < 0 || j < 0 || i >= mapSize || j >= mapSize)
                 return false;
             return true;
         }
 
-        private bool IsEmpty(int i, int j, int length)
+        private bool IsEmpty(int i, int j, int length) //функция проверяет свободны ли ячейки с [i, j] до [i, j + length]
+                                                       //для добавления корабля
         {
             for (int k = j; k < j + length; k++)
                 if (myMap[i, k])
@@ -48,7 +49,7 @@ namespace GameServer
             return true;
         }
 
-        private void ConfigureShips()
+        private void ConfigureShips() //функция размещает на карте бота корабли
         {
             int lengthShip = 4;
             int cycleValue = 1;
@@ -79,11 +80,12 @@ namespace GameServer
             }
         }
 
-        public string Shoot()
+        public string Shoot() //функция случайно выбирает свободную
+                              //клетку для выстрела и возращает его координаты
         {
             Random r = new Random();
 
-            // Проверим не стрелял ли бот туда
+            //Проверим не стрелял ли бот туда
             int posX, posY;
             do
             {
@@ -91,12 +93,12 @@ namespace GameServer
                 posY = r.Next(1, mapSize);
             }
             while (targetMap[posX, posY]);
-            targetMap[posX, posY] = true;
+            targetMap[posX, posY] = true; //отмечаем ячейку после выстрела
 
             return posX + "-" + posY;
         }
 
-        public string IsHit(string coord)
+        public string IsHit(string coord) //функция проверяет попал ли игрок по кораблю бота
         {
             int x = coord.Split('-').Select(int.Parse).ToList().ElementAt(0);
             int y = coord.Split('-').Select(int.Parse).ToList().ElementAt(1);

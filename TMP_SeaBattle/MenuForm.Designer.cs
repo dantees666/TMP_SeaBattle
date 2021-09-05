@@ -110,7 +110,7 @@ namespace TMP_SeaBattle
             this.Controls.Add(this.portLabel);
             this.Controls.Add(this.ipLabel);
             this.Controls.Add(this.nameLabel);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "MenuForm";
             this.Text = "Menu";
             this.ResumeLayout(false);

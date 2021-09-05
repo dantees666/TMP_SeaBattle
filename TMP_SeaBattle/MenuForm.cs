@@ -24,7 +24,7 @@ namespace TMP_SeaBattle
             portInput.Text = defaultPort.ToString();
         }
 
-        private void startButton_Click(object sender, EventArgs e)
+        private void startButton_Click(object sender, EventArgs e) //вызывает игровую форму и устанавливает соединение с сервером
         {
             try
             {
